@@ -1,5 +1,5 @@
 import os
-from flask import Flask, redirect, request, session, url_for, jsonify
+from flask import Flask, redirect, request, session, url_for
 import requests
 from datetime import datetime, timedelta
 from functools import wraps
@@ -27,10 +27,11 @@ def redirect_to_token():
 @app.route('/box_token')
 @requires_auth
 def token():
-    page_output = {
-        'access_token': session['oauth_credentials']['access_token'],
-    }
-    return jsonify(page_output)
+    access_token = session['oauth_credentials']['access_token']
+
+    response = 'Access Token: {} <a href="logout">logout</a>'.format(access_token)
+
+    return (response)
 
 
 @app.route('/box-auth')
