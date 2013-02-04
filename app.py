@@ -20,13 +20,13 @@ def requires_auth(func):
 
 
 @app.route('/')
-def redirect_to_folder():
-    return redirect(url_for('token', folder_id='0'))
+def redirect_to_token():
+    return redirect(url_for('token'))
 
 
 @app.route('/box_token')
 @requires_auth
-def token(folder_id):
+def token():
     page_output = {
         'access_token': session['oauth_credentials']['access_token'],
     }
@@ -37,7 +37,7 @@ def token(folder_id):
 def box_auth():
     oauth_response = get_token(code=request.args.get('code'))
     set_oauth_credentials(oauth_response)
-    return redirect(url_for('box_folder', folder_id=0))
+    return redirect(url_for('token'))
 
 
 @app.route('/login')
