@@ -29,7 +29,7 @@ def redirect_to_token():
 def token():
     access_token = session['oauth_credentials']['access_token']
 
-    response = 'Access Token: {} <a href="logout">logout</a>'.format(access_token)
+    response = 'Access Token: <strong>{}</strong> <a href="logout">logout</a>'.format(access_token)
 
     return (response)
 
