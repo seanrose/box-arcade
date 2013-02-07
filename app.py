@@ -33,12 +33,8 @@ def refresh_access_token_if_needed(func):
         if oauth_credentials_are_expired():
             refresh_oauth_credentials()
 
-        api_response = func(*args, **kwargs)
-        if api_response.status_code == 401:
-            refresh_oauth_credentials()
-            api_response = func(*args, **kwargs)
+        return func(*args, **kwargs)
 
-        return api_response
     return checked_auth
 
 
