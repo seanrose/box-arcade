@@ -19,6 +19,29 @@ def requires_auth(func):
     return checked_auth
 
 
+def refresh_access_token_if_needed(func):
+    """
+    Does two checks:
+    - Checks to see if the OAuth credentials are expired based
+    on what we know about the last access token we got
+    and if so refreshes the access_token
+    - Checks to see if the status code of the response is 401,
+    and if so refreshes the access_token
+    """
+    @wraps(func)
+    def checked_auth(*args, **kwargs):
+        if oauth_credentials_are_expired():
+            refresh_oauth_credentials()
+
+        api_response = func(*args, **kwargs)
+        if api_response.status_code == 401:
+            refresh_oauth_credentials()
+            api_response = func(*args, **kwargs)
+
+        return api_response
+    return checked_auth
+
+
 @app.route('/')
 def redirect_to_token():
     return redirect(url_for('token'))
@@ -26,6 +49,7 @@ def redirect_to_token():
 
 @app.route('/box_token')
 @requires_auth
+@refresh_access_token_if_needed
 def token():
     access_token = session['oauth_credentials']['access_token']
 
@@ -57,29 +81,6 @@ def logout():
 
 
 # OAuth 2 Methods
-
-def refresh_access_token_if_needed(func):
-    """
-    Does two checks:
-    - Checks to see if the OAuth credentials are expired based
-    on what we know about the last access token we got
-    and if so refreshes the access_token
-    - Checks to see if the status code of the response is 401,
-    and if so refreshes the access_token
-    """
-    @wraps(func)
-    def checked_auth(*args, **kwargs):
-        if oauth_credentials_are_expired():
-            refresh_oauth_credentials()
-
-        api_response = func(*args, **kwargs)
-        if api_response.status_code == 401:
-            refresh_oauth_credentials()
-            api_response = func(*args, **kwargs)
-
-        return api_response
-    return checked_auth
-
 
 def oauth_credentials_are_expired():
     return datetime.now() > session['oauth_expiration']
