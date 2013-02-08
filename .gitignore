@@ -33,8 +33,11 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+<<<<<<< HEAD
 
 venv
 .env
 
 .DS_Store
+=======
+>>>>>>> 5c7905102cc00440c4ba64ace3c5198a67921027
