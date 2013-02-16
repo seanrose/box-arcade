@@ -50,13 +50,15 @@ def token():
     access_token = session['oauth_credentials']['access_token']
     refresh_token = session['oauth_credentials']['refresh_token']
 
-    acccess_html = 'Copy this (quotes included): <strong>"Bearer {}"</strong> <a href="logout">logout</a>'.format(access_token)
+    acccess_html = '<strong>Bearer (Access) Token: {}</strong>'.format(access_token)
 
-    refresh_html = ('<br>Refresh Token: {}'.format(refresh_token))
+    refresh_html = '<br><strong>Refresh Token: {}</strong>'.format(refresh_token)
 
-    response = ''.join([acccess_html, refresh_html])
+    logout = '<br><a href="logout">logout</a>'
 
-    return (response)
+    response = ''.join([acccess_html, refresh_html, logout])
+
+    return response
 
 
 @app.route('/box-auth')
