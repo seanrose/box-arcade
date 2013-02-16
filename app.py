@@ -50,9 +50,11 @@ def token():
     access_token = session['oauth_credentials']['access_token']
     refresh_token = session['oauth_credentials']['refresh_token']
 
-    response = 'Copy this (quotes included): <strong>"Bearer {}"</strong> <a href="logout">logout</a>'.format(access_token)
+    acccess_html = 'Copy this (quotes included): <strong>"Bearer {}"</strong> <a href="logout">logout</a>'.format(access_token)
 
-    response.append('<br>Refresh Token: {}'.format(refresh_token))
+    refresh_html = ('<br>Refresh Token: {}'.format(refresh_token))
+
+    response = ''.join([acccess_html, refresh_html])
 
     return (response)
 
