@@ -13,15 +13,26 @@ def set_tokens_in_session(box_auth):
     }
 
 
+def set_client_credentials_in_session(client_id, client_secret):
+    session['client_id'] = client_id
+    session['client_secret'] = client_secret
+
+
+def get_client_credentials():
+    client_id = session.get('client_id') or os.environ.get('BOX_CLIENT_ID')
+    client_secret = (
+        session.get('client_secret') or os.environ.get('BOX_CLIENT_SECRET')
+    )
+    return client_id, client_secret
+
+
 @app.route('/')
 def show_tokens():
     if not session.get('box_auth'):
-        box = BoxAuth(os.environ.get('BOX_CLIENT_ID'),
-                      os.environ.get('BOX_CLIENT_SECRET'))
+        box = BoxAuth(*get_client_credentials())
         return redirect(box.get_authorization_url())
 
-    box = BoxAuth(os.environ.get('BOX_CLIENT_ID'),
-                  os.environ.get('BOX_CLIENT_SECRET'),
+    box = BoxAuth(*box.get_client_credentials(),
                   access_token=session.get('box_auth').get('access_token'),
                   refresh_token=session.get('box_auth').get('refresh_token'))
 
@@ -39,14 +50,22 @@ def show_tokens():
 
 @app.route('/box_auth')
 def box_auth():
-    box = BoxAuth(os.environ.get('BOX_CLIENT_ID'),
-                  os.environ.get('BOX_CLIENT_SECRET'))
+    box = BoxAuth(*get_client_credentials())
 
     box.authenticate_with_code(request.args.get('code'))
 
     set_tokens_in_session(box)
 
     return redirect(url_for('show_tokens'))
+
+
+@app.route('/set_keys')
+def set_keys():
+    set_client_credentials_in_session(
+        request.args.get('client_id'),
+        request.args.get('client_secret')
+    )
+    return redirect(url_for(show_tokens))
 
 
 @app.route('/logout')
