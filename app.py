@@ -4,9 +4,6 @@ from itsdangeroussession import ItsdangerousSessionInterface
 from flask import Flask, redirect, session, request, url_for
 
 app = Flask(__name__)
-os.environ['BOX_CLIENT_ID'] = 'sm8p4b8fvfv88mrrtztqpj402yir4u87'
-os.environ['BOX_CLIENT_SECRET'] = 'N4dHRVvUc7DwqBzrC5efDJDHZ1I69zs5'
-os.environ['SECRET_KEY'] = '\x1ep\tslg-\x9b\x9d\xb2Z5R\xab\x90\xc4\xdb'
 
 
 def set_tokens_in_session(box_auth):
@@ -17,7 +14,7 @@ def set_tokens_in_session(box_auth):
 
 
 @app.route('/')
-def user_info():
+def show_tokens():
     if not session.get('box_auth'):
         box = BoxAuth(os.environ.get('BOX_CLIENT_ID'),
                       os.environ.get('BOX_CLIENT_SECRET'))
@@ -34,6 +31,7 @@ def user_info():
     return """
     <p><strong>Access Token:</strong> {}</p>
     <p><strong>Refresh Token:</strong> {}</p>
+    <p>Reload the page to refresh the tokens</p>
     <p><a href="/logout">logout</a></p>
     """.format(box.access_token,
                box.refresh_token)
@@ -48,7 +46,7 @@ def box_auth():
 
     set_tokens_in_session(box)
 
-    return redirect(url_for('user_info'))
+    return redirect(url_for('show_tokens'))
 
 
 @app.route('/logout')
