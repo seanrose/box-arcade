@@ -52,10 +52,12 @@ def show_tokens():
     return """
     <p><strong>Access Token:</strong> {}</p>
     <p><strong>Refresh Token:</strong> {}</p>
+    <p>Generated with Client ID: {}</p>
     <p>Reload the page to refresh the tokens</p>
     <p><a href="/logout">logout</a></p>
     """.format(box.access_token,
-               box.refresh_token)
+               box.refresh_token,
+               get_client_credentials()[0])
 
 
 @app.route('/box_auth')
