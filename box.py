@@ -41,10 +41,11 @@ class BoxAuth(object):
             self.set_oauth_tokens(kwargs.get('access_token'),
                                   kwargs.get('refresh_token'))
 
-    def get_authorization_url(self):
+    def get_authorization_url(self, redirect_uri=''):
 
-        return '{}?response_type=code&client_id={}'.format(BOX_AUTH_URL,
-                                                           self.client_id)
+        return '{}?response_type=code&client_id={}&redirect_uri={}'.format(
+            BOX_AUTH_URL, self.client_id, redirect_uri
+        )
 
     def authenticate_with_code(self, code):
         """

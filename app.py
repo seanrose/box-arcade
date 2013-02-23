@@ -1,4 +1,5 @@
 import os
+import urllib
 from box import BoxAuth
 from itsdangeroussession import ItsdangerousSessionInterface
 from flask import Flask, redirect, session, request, url_for
@@ -30,9 +31,12 @@ def get_client_credentials():
 def show_tokens():
     if not session.get('box_auth'):
         box = BoxAuth(*get_client_credentials())
-        return redirect(box.get_authorization_url())
 
-    box = BoxAuth(*box.get_client_credentials(),
+        return redirect(box.get_authorization_url(
+            redirect_uri=urllib.quote_plus(request.url_root + 'box_auth')
+        ))
+
+    box = BoxAuth(*get_client_credentials(),
                   access_token=session.get('box_auth').get('access_token'),
                   refresh_token=session.get('box_auth').get('refresh_token'))
 
@@ -61,11 +65,12 @@ def box_auth():
 
 @app.route('/set_keys')
 def set_keys():
+    session.clear()
     set_client_credentials_in_session(
         request.args.get('client_id'),
         request.args.get('client_secret')
     )
-    return redirect(url_for(show_tokens))
+    return redirect(url_for('show_tokens'))
 
 
 @app.route('/logout')
@@ -83,4 +88,4 @@ if __name__ == '__main__':
     app.debug = True
     app.session_interface = ItsdangerousSessionInterface()
     app.secret_key = os.environ['SECRET_KEY']
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='localhost', port=port)
