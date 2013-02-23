@@ -4,12 +4,15 @@ from itsdangeroussession import ItsdangerousSessionInterface
 from flask import Flask, redirect, session, request, url_for
 
 app = Flask(__name__)
+os.environ['BOX_CLIENT_ID'] = 'sm8p4b8fvfv88mrrtztqpj402yir4u87'
+os.environ['BOX_CLIENT_SECRET'] = 'N4dHRVvUc7DwqBzrC5efDJDHZ1I69zs5'
+os.environ['SECRET_KEY'] = '\x1ep\tslg-\x9b\x9d\xb2Z5R\xab\x90\xc4\xdb'
 
 
 def set_tokens_in_session(box_auth):
     session['box_auth'] = {
-        'access_token': box_auth.get_access_token(),
-        'refresh_token': box_auth.get_refresh_token()
+        'access_token': box_auth.access_token,
+        'refresh_token': box_auth.refresh_token
     }
 
 
@@ -32,8 +35,8 @@ def user_info():
     <p><strong>Access Token:</strong> {}</p>
     <p><strong>Refresh Token:</strong> {}</p>
     <p><a href="/logout">logout</a></p>
-    """.format(box.get_access_token(),
-               box.get_refresh_token())
+    """.format(box.access_token,
+               box.refresh_token)
 
 
 @app.route('/box_auth')

@@ -46,18 +46,6 @@ class BoxAuth(object):
         return '{}?response_type=code&client_id={}'.format(BOX_AUTH_URL,
                                                            self.client_id)
 
-    def get_access_token(self):
-        """
-        Basic getter for the current access token
-        """
-        return self.access_token
-
-    def get_refresh_token(self):
-        """
-        Basic getter for the current access token
-        """
-        return self.refresh_token
-
     def authenticate_with_code(self, code):
         """
         Helper method to authenticate the current BoxAuth
@@ -117,7 +105,7 @@ class BoxAuth(object):
         else:
             oauth_data.update({
                 'grant_type': 'refresh_token',
-                'refresh_token': self.get_refresh_token()
+                'refresh_token': self.refresh_token
             })
 
         oauth_data.update({
