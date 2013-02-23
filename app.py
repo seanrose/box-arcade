@@ -3,8 +3,10 @@ import urllib
 from box import BoxAuth
 from itsdangeroussession import ItsdangerousSessionInterface
 from flask import Flask, redirect, session, request, url_for
+from flask_sslify import SSLify
 
 app = Flask(__name__)
+sslify = SSLify(app)
 
 
 def set_tokens_in_session(box_auth):
@@ -85,7 +87,7 @@ def logout():
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get('PORT', 5000))
-    app.debug = True
+    # app.debug = True
     app.session_interface = ItsdangerousSessionInterface()
     app.secret_key = os.environ['SECRET_KEY']
     app.run(host='0.0.0.0', port=port)
