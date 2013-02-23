@@ -3,10 +3,8 @@ import urllib
 from box import BoxAuth
 from itsdangeroussession import ItsdangerousSessionInterface
 from flask import Flask, redirect, session, request, url_for
-from flask_sslify import SSLify
 
 app = Flask(__name__)
-sslify = SSLify(app)
 
 
 def set_tokens_in_session(box_auth):
@@ -34,9 +32,13 @@ def show_tokens():
     if not session.get('box_auth'):
         box = BoxAuth(*get_client_credentials())
 
-        return redirect(box.get_authorization_url(
-            redirect_uri=urllib.quote_plus(request.url_root + 'box_auth')
-        ))
+        redirect_uri = urllib.quote_plus(request.url_root + 'box_auth')
+
+        # If we are on a local server, we can't do https
+        if '0.0.0.0:5000' not in redirect_uri:
+            redirect_uri = redirect_uri.replace('http://', 'https://')
+
+        return redirect(box.get_authorization_url(redirect_uri=redirect_uri))
 
     box = BoxAuth(*get_client_credentials(),
                   access_token=session.get('box_auth').get('access_token'),
