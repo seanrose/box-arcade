@@ -100,11 +100,18 @@ def set_client_credentials():
 
 @app.route('/logout')
 def logout():
+    # Revoke current tokens, if there are any
+    box = BoxAuth(
+        *get_client_credentials(),
+        access_token=session.get('access_token'),
+        refresh_token=session.get('refresh_token')
+    )
+    box.revoke_tokens()
+
+    # Clear everything out of the session
     session.clear()
-    return """
-    <p>You are now logged out of your Box account.</p><br>
-    <a href="/">log back in</a>
-    """
+
+    return render_template('logged_out.html')
 
 
 if __name__ == '__main__':

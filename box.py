@@ -1,5 +1,5 @@
 import requests
-from settings import BOX_TOKEN_URL, BOX_AUTH_URL
+from settings import BOX_TOKEN_URL, BOX_AUTH_URL, BOX_REVOKE_URL
 
 
 class BoxAuth(object):
@@ -122,3 +122,15 @@ class BoxAuth(object):
                 token_response.json().get('access_token'),
                 token_response.json().get('refresh_token')
             )
+
+    def revoke_tokens(self):
+        """
+        Invalidate the current access and refresh tokens
+        """
+        revoke_data = {
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'token': getattr(self, 'access_token', '')
+        }
+        requests.post(BOX_REVOKE_URL, data=revoke_data)
+        return
