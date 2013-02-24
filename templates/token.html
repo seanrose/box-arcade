@@ -37,6 +37,6 @@
         </tr>
     </tbody>
 </table>
-<p class="lead">Reloading the page will refresh the tokens.</p>
-<a href="/logout">Log Out of Your Box Account</a>
+<p><a id="refresher" class="btn btn-primary btn-large" href="javascript:history.go(0)" onclick="$('#refresher').button('loading')" data-loading-text="refreshing...">Refresh Tokens</a></p>
+<p><a href="/logout">Log Out of Your Box Account</a></p>
 {% endblock %}
