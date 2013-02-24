@@ -60,7 +60,7 @@ class BoxAuth(object):
         Requires having a refresh token set on this object
         """
 
-        if not self.refresh_token:
+        if not hasattr(self, 'refresh_token'):
             raise ValueError("""
                 You must first have a refresh token before
                 you can refresh your current token set

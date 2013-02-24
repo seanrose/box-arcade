@@ -2,16 +2,14 @@ import os
 import urllib
 from box import BoxAuth
 from itsdangeroussession import ItsdangerousSessionInterface
-from flask import Flask, redirect, session, request, url_for
+from flask import Flask, redirect, session, request, url_for, render_template
 
 app = Flask(__name__)
 
 
 def set_tokens_in_session(box_auth):
-    session['box_auth'] = {
-        'access_token': box_auth.access_token,
-        'refresh_token': box_auth.refresh_token
-    }
+    session['access_token'] = box_auth.access_token,
+    session['refresh_token'] = box_auth.refresh_token
 
 
 def set_client_credentials_in_session(client_id, client_secret):
@@ -29,35 +27,30 @@ def get_client_credentials():
 
 @app.route('/')
 def show_tokens():
-    if not session.get('box_auth'):
-        box = BoxAuth(*get_client_credentials())
+    if not session.get('access_token') or not session.get('refresh_token'):
 
-        redirect_uri = request.url_root + 'box_auth'
-
-        # If we are on a local server, we can't do https
-        if '0.0.0.0:5000' not in redirect_uri:
-            redirect_uri = redirect_uri.replace('http://', 'https://')
-
-        return redirect(box.get_authorization_url(
-            redirect_uri=urllib.quote_plus(redirect_uri))
+        return render_template(
+            'token.html',
+            access_token='',
+            refresh_token='',
+            client_id='',
+            show_modal=True
         )
 
-    box = BoxAuth(*get_client_credentials(),
-                  access_token=session.get('box_auth').get('access_token'),
-                  refresh_token=session.get('box_auth').get('refresh_token'))
-
+    box = BoxAuth(
+        *get_client_credentials(),
+        access_token=session.get('access_token'),
+        refresh_token=session.get('refresh_token')
+    )
     box.refresh_tokens()
     set_tokens_in_session(box)
 
-    return """
-    <p><strong>Access Token:</strong> {}</p>
-    <p><strong>Refresh Token:</strong> {}</p>
-    <p>Generated with Client ID: {}</p>
-    <p>Reload the page to refresh the tokens</p>
-    <p><a href="/logout">logout</a></p>
-    """.format(box.access_token,
-               box.refresh_token,
-               get_client_credentials()[0])
+    return render_template(
+        'token.html',
+        access_token=box.access_token,
+        refresh_token=box.refresh_token,
+        client_id=get_client_credentials()[0]
+    )
 
 
 @app.route('/box_auth')
@@ -79,6 +72,30 @@ def set_keys():
         request.args.get('client_secret')
     )
     return redirect(url_for('show_tokens'))
+
+
+@app.route('/set_client_credentials', methods=['GET', 'POST'])
+def set_client_credentials():
+    session.clear()
+
+    # Set the client credentials in the session
+    # If this is a GET, the credentials in the form
+    # will both be None, so we default to the credentials
+    # set as environment variables
+    set_client_credentials_in_session(
+        request.form.get('client_id'),
+        request.form.get('client_secret')
+    )
+    redirect_uri = request.url_root + 'box_auth'
+
+    # If we are on a local machine, we can't do https
+    if '0.0.0.0:5000' not in redirect_uri:
+        redirect_uri = redirect_uri.replace('http://', 'https://')
+
+    box = BoxAuth(*get_client_credentials())
+    return redirect(box.get_authorization_url(
+        redirect_uri=urllib.quote_plus(redirect_uri))
+    )
 
 
 @app.route('/logout')

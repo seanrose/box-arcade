@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<title>Box Token Generator</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}"/>
+</head>
+<body {% if show_modal is defined %} onload="$('#credentialsModal').modal()"{% endif %}>
+<div class="container">
+    {% if show_modal is defined %}
+    <div id="credentialsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <h3 id="myModalLabel">Set Your Client Credentials</h3>
+            <h4><a href="set_client_credentials">or use the built-in client credentials</a></h4>
+        </div>
+        <div class="modal-body">
+            <div class="alert">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <h4>Warning!</h4>
+                Only use this tool with test credentials
+            </div>
+            <form action="set_client_credentials" method="post">
+                <fieldset>
+                    <label>Client ID</label>
+                    <input name="client_id" class="span4" type="text" placeholder="randomcharacters" required>
+                    <label>Client Secret</label>
+                    <input name="client_secret" class="span4" type="text" placeholder="morerandomcharacters" required><br>
+                    <button type="submit" class="btn">Get Tokens!</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    <table class="table table-bordered table-hover">
+        <tbody>
+            <tr>
+                <td><h4>Access Token: <h4 class="text-info">{{ access_token }}</h4></h4></td>
+            </tr>
+            <tr>
+                <td><h4>Refresh Token: <h4 class="text-info">{{ refresh_token }}</h4></h4></td>
+            </tr>
+            <tr>
+                <td><h4>Generated with this Client ID: <h4 class="text-info">{{ client_id }}</h4></h4></td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="lead">Reloading the page will refresh the tokens.</p>
+    <a href="/logout">Log Out of Your Box Account</a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.0/js/bootstrap.min.js"></script>
+</body>
+</html>
