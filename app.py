@@ -1,10 +1,13 @@
 import os
 import urllib
+import settings
 from box import BoxAuth
 from itsdangeroussession import ItsdangerousSessionInterface
 from flask import Flask, redirect, session, request, url_for, render_template
 
 app = Flask(__name__)
+# os.environ['BOX_CLIENT_ID'] = settings.BOX_CLIENT_ID
+# os.environ['BOX_CLIENT_SECRET'] = settings.BOX_CLIENT_SECRET
 
 
 def set_tokens_in_session(box_auth):
@@ -128,5 +131,5 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     # app.debug = True
     app.session_interface = ItsdangerousSessionInterface()
-    app.secret_key = os.environ['SECRET_KEY']
+    app.secret_key = settings.SECRET_KEY
     app.run(host='0.0.0.0', port=port)
