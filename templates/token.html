@@ -17,7 +17,16 @@
                 <label>Client ID</label>
                 <input name="client_id" class="span4" type="text" placeholder="randomcharacters" required>
                 <label>Client Secret</label>
-                <input name="client_secret" class="span4" type="text" placeholder="morerandomcharacters" required><br>
+                <input name="client_secret" class="span4" type="text" placeholder="morerandomcharacters" required>
+                {% if show_base_url is not none %}
+                <label>Dev OAuth Url</label>
+                <div class="input-prepend input-append">
+                    <span class="add-on">https://</span>
+                    <input class="span2" name="base_url" type="text" placeholder="srose">
+                    <span class="add-on">.inside-box.net/api/oauth2</span>
+                </div>
+                {% endif %}
+                <br>
                 <button type="submit" class="btn">Get Tokens!</button>
             </fieldset>
         </form>
@@ -35,6 +44,11 @@
         <tr>
             <td><h4>Generated with this Client ID: <h4 class="text-info">{{ client_id }}</h4></h4></td>
         </tr>
+        {% if base_url is defined and base_url is not none %}
+        <tr>
+            <td><h4>Using this Base URL: <h4 class="text-info">{{ base_url }}</h4></h4></td>
+        </tr>
+        {% endif %}
     </tbody>
 </table>
 <p><a id="refresher" class="btn btn-primary btn-large" href="javascript:history.go(0)" onclick="$('#refresher').button('loading')" data-loading-text="refreshing...">Refresh Tokens</a></p>

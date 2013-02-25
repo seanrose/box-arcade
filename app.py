@@ -27,6 +27,8 @@ def get_client_credentials():
 
 @app.route('/')
 def show_tokens():
+    # If there are no tokens set on the session, show the modal to enter
+    # client credentials
     if not session.get('access_token') or not session.get('refresh_token'):
 
         return render_template(
@@ -34,13 +36,15 @@ def show_tokens():
             access_token='',
             refresh_token='',
             client_id='',
-            show_modal=True
+            show_modal=True,
+            show_base_url=request.args.get('dev')
         )
 
     box = BoxAuth(
         *get_client_credentials(),
         access_token=session.get('access_token'),
-        refresh_token=session.get('refresh_token')
+        refresh_token=session.get('refresh_token'),
+        base_url=session.get('base_url')
     )
     box.refresh_tokens()
     set_tokens_in_session(box)
@@ -49,28 +53,19 @@ def show_tokens():
         'token.html',
         access_token=box.access_token,
         refresh_token=box.refresh_token,
-        client_id=get_client_credentials()[0]
+        client_id=box.client_id,
+        base_url=session.get('base_url')
     )
 
 
 @app.route('/box_auth')
 def box_auth():
-    box = BoxAuth(*get_client_credentials())
+    box = BoxAuth(*get_client_credentials(), base_url=session.get('base_url'))
 
     box.authenticate_with_code(request.args.get('code'))
 
     set_tokens_in_session(box)
 
-    return redirect(url_for('show_tokens'))
-
-
-@app.route('/set_keys')
-def set_keys():
-    session.clear()
-    set_client_credentials_in_session(
-        request.args.get('client_id'),
-        request.args.get('client_secret')
-    )
     return redirect(url_for('show_tokens'))
 
 
@@ -86,13 +81,26 @@ def set_client_credentials():
         request.form.get('client_id'),
         request.form.get('client_secret')
     )
+
+    if request.form.get('base_url') is not None:
+        base_url = 'https://{}.inside-box.net/api/oauth2'.format(
+            request.form.get('base_url')
+        )
+    else:
+        base_url = None
+
+    # Set the base_url in the session, if there was no base_url
+    # in the form, we're ok because we only access the session
+    # through dict.get()
+    session['base_url'] = base_url
+
     redirect_uri = request.url_root + 'box_auth'
 
     # If we are on a local machine, we can't do https
     if '0.0.0.0:5000' not in redirect_uri:
         redirect_uri = redirect_uri.replace('http://', 'https://')
 
-    box = BoxAuth(*get_client_credentials())
+    box = BoxAuth(*get_client_credentials(), base_url=base_url)
     return redirect(box.get_authorization_url(
         redirect_uri=urllib.quote_plus(redirect_uri))
     )
@@ -104,7 +112,8 @@ def logout():
     box = BoxAuth(
         *get_client_credentials(),
         access_token=session.get('access_token'),
-        refresh_token=session.get('refresh_token')
+        refresh_token=session.get('refresh_token'),
+        base_url=session.get('base_url')
     )
     box.revoke_tokens()
 
