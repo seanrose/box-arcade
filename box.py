@@ -1,5 +1,5 @@
 import requests
-from settings import BOX_TOKEN_URL, BOX_AUTH_URL, BOX_REVOKE_URL
+from settings import BASE_URL
 
 
 class BoxAuth(object):
@@ -29,10 +29,11 @@ class BoxAuth(object):
 
     """
 
-    def __init__(self, client_id, client_secret, **kwargs):
+    def __init__(self, client_id, client_secret, base_url=None, **kwargs):
 
         self.client_id = client_id
         self.client_secret = client_secret
+        self.base_url = base_url or BASE_URL
 
         if kwargs.get('code'):
             self.set_oauth_tokens(self._fetch_oauth_tokens(kwargs['code']))
@@ -43,8 +44,10 @@ class BoxAuth(object):
 
     def get_authorization_url(self, redirect_uri=''):
 
-        return '{}?response_type=code&client_id={}&redirect_uri={}'.format(
-            BOX_AUTH_URL, self.client_id, redirect_uri
+        return '{}/authorize?response_type=code&client_id={}&redirect_uri={}'.format(
+            self.base_url,
+            self.client_id,
+            redirect_uri
         )
 
     def authenticate_with_code(self, code):
@@ -114,7 +117,8 @@ class BoxAuth(object):
             'client_secret': self.client_secret
         })
 
-        token_response = requests.post(BOX_TOKEN_URL, data=oauth_data)
+        token_url = '{}/token'.format(self.base_url)
+        token_response = requests.post(token_url, data=oauth_data)
         if raw:
             return token_response.json()
         else:
@@ -132,5 +136,6 @@ class BoxAuth(object):
             'client_secret': self.client_secret,
             'token': getattr(self, 'access_token', '')
         }
-        requests.post(BOX_REVOKE_URL, data=revoke_data)
+        revoke_url = '{}/revoke'.format(self.base_url)
+        requests.post(revoke_url, data=revoke_data)
         return
