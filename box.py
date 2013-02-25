@@ -39,8 +39,8 @@ class BoxAuth(object):
             self.set_oauth_tokens(self._fetch_oauth_tokens(kwargs['code']))
 
         if kwargs.get('access_token') and kwargs.get('refresh_token'):
-            self.set_oauth_tokens(kwargs.get('access_token'),
-                                  kwargs.get('refresh_token'))
+            self.access_token = kwargs.get('access_token'),
+            self.refresh_token = kwargs.get('refresh_token')
 
     def get_authorization_url(self, redirect_uri=''):
 
@@ -131,11 +131,12 @@ class BoxAuth(object):
         """
         Invalidate the current access and refresh tokens
         """
-        revoke_data = {
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'token': getattr(self, 'access_token', '')
-        }
-        revoke_url = '{}/revoke'.format(self.base_url)
-        requests.post(revoke_url, data=revoke_data)
+        if hasattr(self, 'access_token'):
+            revoke_data = {
+                'client_id': self.client_id,
+                'client_secret': self.client_secret,
+                'token': getattr(self, 'access_token', '')
+            }
+            revoke_url = '{}/revoke'.format(self.base_url)
+            requests.post(revoke_url, data=revoke_data)
         return
