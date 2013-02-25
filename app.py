@@ -85,7 +85,7 @@ def set_client_credentials():
         request.form.get('client_secret')
     )
 
-    if request.form.get('base_url') is not None:
+    if request.form.get('base_url'):
         base_url = 'https://{}.inside-box.net/api/oauth2'.format(
             request.form.get('base_url')
         )
