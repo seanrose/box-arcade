@@ -25,8 +25,11 @@
                     <input class="span2" name="base_url" type="text" placeholder="srose">
                     <span class="add-on">.inside-box.net/api/oauth2</span>
                 </div>
+                <span class="help-block">If blank will default to https://www.box.com/api/oauth2</span>
                 {% endif %}
+                {% if show_base_url is none %}
                 <br>
+                {% endif %}
                 <button type="submit" class="btn">Get Tokens!</button>
             </fieldset>
         </form>
