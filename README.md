@@ -1,9 +1,10 @@
 box-token-generator
 ===================
 
-A Simple Flask App for generating and refreshing access tokens
+A Simple Flask App for generating and refreshing access tokens for [Box OAuth 2](http://developers.box.com/oauth/)
 
 Live demo here: https://box-token-generator.herokuapp.com
+*You shouldn't use production client credentials or login information with the demo–NEVER share your production client secret with anyone*
 
 Installation
 ------------
