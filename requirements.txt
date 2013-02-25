@@ -5,3 +5,4 @@ distribute==0.6.31
 itsdangerous==0.17
 requests==1.1.0
 wsgiref==0.1.2
+newrelic
