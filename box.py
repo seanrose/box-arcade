@@ -121,6 +121,7 @@ class BoxAuth(object):
         token_response = requests.post(token_url, data=oauth_data)
 
         if token_response.status_code != requests.codes.ok:
+            print 'Code for client_id {} failed'.format(self.client_id)
             return None, None
 
         if raw:
