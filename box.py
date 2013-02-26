@@ -119,6 +119,10 @@ class BoxAuth(object):
 
         token_url = '{}/token'.format(self.base_url)
         token_response = requests.post(token_url, data=oauth_data)
+
+        if token_response.status_code != requests.codes.ok:
+            return None, None
+
         if raw:
             return token_response.json()
         else:
