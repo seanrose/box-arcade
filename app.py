@@ -65,9 +65,11 @@ def show_tokens():
 def box_auth():
     box = BoxAuth(*get_client_credentials(), base_url=session.get('base_url'))
 
-    box.authenticate_with_code(request.args.get('code'))
-
-    set_tokens_in_session(box)
+    try:
+        box.authenticate_with_code(request.args.get('code'))
+        set_tokens_in_session(box)
+    except:
+        print 'OAuth 2 Error: {}'.format(request.args)
 
     return redirect(url_for('show_tokens'))
 
