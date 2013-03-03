@@ -1,4 +1,4 @@
-box-token-generator
+box-arcade
 ===================
 
 A Simple Flask App for generating and refreshing access tokens for [Box OAuth 2](http://developers.box.com/oauth/)
@@ -13,11 +13,11 @@ Installation
 
 2. Clone the source code:
 
-    ```$ git clone https://github.com/seanrose/box-token-generator.git ```
+    ```$ git clone https://github.com/seanrose/box-arcade.git ```
     
 3. cd into the directory you just cloned
 
-  ```$ cd box-token-generator```
+  ```$ cd box-arcade```
     
 4. Create a virtual environment
 
@@ -33,7 +33,7 @@ Installation
     
 7. Start up the web server
 
-    ```$ python app.py```
+    ```$ python runserver.py```
     
 8. Go to the now running app at [http://0.0.0.0:5000/](http://0.0.0.0:5000/)
 
