@@ -5,6 +5,11 @@
 <title>Box Token Generator</title>
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}"/>
+<style>
+.flash-hover {
+    background-color: #f5f5f5;
+}
+</style>
 </head>
 <body {% if show_modal is defined %} onload="$('#credentialsModal').modal()"{% endif %}>
 <a href="https://github.com/seanrose/box-arcade"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
@@ -17,5 +22,13 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+setInterval( function() {
+        $('#refresher').button('loading');
+        history.go(0);
+    },
+    3600000
+);
+</script>
 </body>
 </html>

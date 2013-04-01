@@ -29,7 +29,13 @@ class BoxAuth(object):
 
     """
 
-    def __init__(self, client_id, client_secret, base_url=None, **kwargs):
+    def __init__(self, client_id, client_secret,
+                 base_url=None,
+                 scope=None,
+                 redirect_uri=None,
+                 authorize_url=None,
+                 token_url=None,
+                 **kwargs):
 
         self.client_id = client_id
         self.client_secret = client_secret

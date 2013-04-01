@@ -56,12 +56,4 @@
 </table>
 <p><a id="refresher" class="btn btn-primary btn-large" href="javascript:history.go(0)" onclick="$('#refresher').button('loading')" data-loading-text="refreshing...">Refresh Tokens</a></p>
 <p><a href="/logout">Log Out of Your Box Account</a></p>
-<script type="text/javascript">
-setInterval( function() {
-        $('#refresher').button('loading');
-        history.go(0);
-    },
-    3600000
-);
-</script>
 {% endblock %}
