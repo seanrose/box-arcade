@@ -1,38 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
 {% if show_modal is defined %}
-<div id="credentialsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <h3 id="myModalLabel">Set Your Box Client Credentials</h3>
-        <h4><a href="set_client_credentials">or use the built-in client credentials</a></h4>
-    </div>
-    <div class="modal-body">
-        <div class="alert">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Warning!</h4>
-            Only use this tool with test client credentials/test Box accounts
-        </div>
-        <form action="set_client_credentials" method="post">
-            <fieldset>
-                <label>Client ID</label>
-                <input name="client_id" class="span4" type="text" placeholder="randomcharacters" required>
-                <label>Client Secret</label>
-                <input name="client_secret" class="span4" type="text" placeholder="morerandomcharacters" required>
-                {% if show_base_url is not none %}
-                <label>Dev OAuth Url</label>
-                <div class="input-prepend input-append">
-                    <span class="add-on">https://</span>
-                    <input class="span2" name="base_url" type="text" placeholder="srose">
-                    <span class="add-on">.inside-box.net/api/oauth2</span>
+<div id="credentialsModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="myModalLabel">Set Your Box Client Credentials</h3>
+                <h4><a href="set_client_credentials">or use the built-in client credentials</a></h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert bg-warning">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <p><strong>Warning!</strong> Only use this tool with test client credentials/test Box accounts</p>
                 </div>
-                <span class="help-block">If blank will default to https://www.box.com/api/oauth2</span>
-                {% endif %}
-                {% if show_base_url is none %}
-                <br>
-                {% endif %}
-                <button type="submit" class="btn">Get Tokens!</button>
-            </fieldset>
-        </form>
+                <form role="form"action="set_client_credentials" method="post">
+                    <div class="form-group">
+                        <label>Client ID</label>
+                        <input name="client_id" class="form-control" type="text" placeholder="randomcharacters" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Client Secret</label>
+                        <input name="client_secret" class="form-control" type="text" placeholder="morerandomcharacters" required>
+                    </div>
+                    {% if show_base_url is not none %}
+                    <div class="form-group">
+                        <label>Dev OAuth Url</label>
+                        <div class="input-prepend input-append">
+                            <span class="add-on">https://</span>
+                            <input class="span2" name="base_url" type="text" placeholder="srose">
+                            <span class="add-on">.inside-box.net/api/oauth2</span>
+                        </div>
+                        <span class="help-block">If blank will default to https://www.box.com/api/oauth2</span>
+                    </div>
+                    {% endif %}
+                    {% if show_base_url is none %}
+                    <br>
+                    {% endif %}
+                    <button type="submit" class="btn btn-default">Get Tokens!</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endif %}
